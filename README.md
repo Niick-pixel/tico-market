@@ -1,21 +1,28 @@
 # Tico Market
 
 An open-source iOS marketplace app for Costa Rica: post items for a fixed price ("ask") or
-run real-time auctions where buyers bid live. Built with SwiftUI, Firebase, and iOS 26's
-Liquid Glass design system (with a graceful fallback on older iOS versions).
+run real-time auctions where buyers bid live. Built with SwiftUI and Firebase, styled to read
+close to iOS 26's Liquid Glass design language.
 
-> **Status**: early MVP scaffold. It has been written carefully but has **not been compiled**
-> — this repo was generated on a machine without Xcode. See [Known caveats](#known-caveats)
-> before you start.
+> **Status**: early MVP. CI is green — see [No Mac? Use CI](#no-mac-use-ci-to-compile-check--see-screenshots)
+> below for how that was verified without any of us touching a Mac.
 
-## No Mac? Use CI to compile-check
+## No Mac? Use CI to compile-check + see screenshots
 
 `.github/workflows/ci.yml` builds the app on a free GitHub-hosted macOS runner on every push
-and pull request — no local Mac required to find out whether it compiles. Push this repo to
-GitHub and check the **Actions** tab after each push; it runs `xcodegen generate` then
-`xcodebuild build` against the iOS Simulator SDK (no code signing, no Firebase secrets needed
-for a plain compile check). Treat red CI as your primary feedback loop until you have access
-to a Mac for interactive development and simulator testing.
+and pull request — no local Mac required to find out whether it compiles or what it looks like.
+Push to GitHub and check the **Actions** tab after each push:
+
+- It runs `xcodegen generate` then `xcodebuild build` against the iOS Simulator SDK (no code
+  signing needed).
+- It drops in a **fake, non-functional** `GoogleService-Info.plist`
+  (`Resources/GoogleService-Info.ci.plist`) purely so `FirebaseApp.configure()` doesn't crash
+  on launch — no real secrets involved, and your real config stays gitignored.
+- It boots an iPhone 16 Simulator, installs and launches the app, and uploads a screenshot of
+  the sign-in screen as a workflow artifact (bottom of the run's summary page, under
+  **Artifacts**). That's a real rendered screenshot of the actual UI, not a mockup.
+
+Treat CI as your primary feedback loop until you have interactive access to a Mac or simulator.
 
 ## Features (MVP)
 
@@ -31,8 +38,11 @@ to a Mac for interactive development and simulator testing.
 ## Stack
 
 - **SwiftUI**, iOS 17+ deployment target
-- **Liquid Glass** (`.glassEffect()`, `.buttonStyle(.glass...)`) on iOS 26+, with an
-  `.ultraThinMaterial` fallback on iOS 17–25 — see `Sources/Components/GlassModifiers.swift`
+- **Liquid Glass–styled UI** via `.ultraThinMaterial` in `Sources/Components/GlassModifiers.swift`.
+  The real iOS 26 `.glassEffect()` API isn't used yet: that symbol doesn't exist in SDKs older
+  than Xcode 26, so referencing it fails to *compile* on any older toolchain regardless of
+  `#available` checks — and GitHub's macOS CI runners currently ship Xcode 16.4. Swap the
+  modifier body for `.glassEffect(...)` once you're building with Xcode 26, locally or in CI.
 - **Firebase**: Auth, Firestore (realtime listeners), Storage
 - **[XcodeGen](https://github.com/yonaskolb/XcodeGen)** generates the `.xcodeproj` from
   `project.yml` — the generated project is gitignored, so the repo only tracks source files
@@ -105,20 +115,15 @@ project.yml                  # XcodeGen spec — generates TicoMarket.xcodeproj
 
 ## Known caveats
 
-Since this scaffold was written without access to Xcode or a Mac, a few things to double-check
-on first build:
-
-- **Liquid Glass API surface**: `Sources/Components/GlassModifiers.swift` uses
-  `.glassEffect(.regular.tint(_:).interactive(), in:)` and friends based on the public iOS 26
-  API shape. Confirm the exact method names against the iOS 26 SDK you have installed and
-  adjust if Apple's final API differs slightly.
+- **No real Liquid Glass yet** — see the Stack section above. It's `.ultraThinMaterial` for now.
 - **Firebase SPM versions**: `project.yml` pins `firebase-ios-sdk` from `11.0.0`. Bump this if
   a newer major version is out by the time you build.
 - **No asset catalog yet**: there's no `Assets.xcassets` in this scaffold (App Icon, accent
   color). Add one in Xcode — it's much easier to do with the icon-generation tooling built
   into Xcode than to hand-author it.
-- Nothing here has been run in the iOS Simulator. Treat the first build as the real
-  smoke test, and expect to fix a handful of small compile errors.
+- CI verifies the app compiles and boots to the sign-in screen in the Simulator. It does not
+  exercise sign-in, listing creation, or bidding — those all need a real Firebase project
+  behind them, so treat them as untested until you click through them yourself.
 
 ## Roadmap ideas (post-MVP)
 

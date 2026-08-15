@@ -15,7 +15,7 @@ struct CountdownTimerView: View {
         VStack(spacing: 4) {
             Text(hasEnded ? "Subasta terminada" : formatted(remaining))
                 .font(.title2.monospacedDigit().bold())
-                .foregroundStyle(hasEnded ? .secondary : (isEndingSoon ? .red : .primary))
+                .foregroundStyle(hasEnded ? Color.secondary : (isEndingSoon ? Color.red : Color.primary))
             if isEndingSoon && !hasEnded {
                 Text("¡Termina pronto!")
                     .font(.caption.weight(.semibold))
@@ -51,7 +51,7 @@ struct CountdownChip: View {
             .font(.caption2.weight(.semibold))
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
-            .foregroundStyle(isEndingSoon ? .white : .primary)
+            .foregroundStyle(isEndingSoon ? Color.white : Color.primary)
             .background(isEndingSoon ? Color.red : Color.clear, in: Capsule())
             .glassCard(cornerRadius: 12)
             .onReceive(timer) { now = $0 }

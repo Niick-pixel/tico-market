@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Fake, structurally-valid Firebase config used ONLY by CI so the app can call
+  FirebaseApp.configure() without crashing and boot far enough in the iOS
+  Simulator to screenshot the UI. It points at no real Firebase project — any
+  actual network call (sign in, Firestore, Storage) will fail. Get your own
+  real GoogleService-Info.plist from the Firebase console for local
+  development; see the README.
+-->
+<plist version="1.0">
+<dict>
+    <key>CLIENT_ID</key>
+    <string>000000000000-fake.apps.googleusercontent.com</string>
+    <key>REVERSED_CLIENT_ID</key>
+    <string>com.googleusercontent.apps.000000000000-fake</string>
+    <key>API_KEY</key>
+    <string>AIzaFakeKeyForCIBuildsOnly00000000000</string>
+    <key>GCM_SENDER_ID</key>
+    <string>000000000000</string>
+    <key>PLIST_VERSION</key>
+    <string>1</string>
+    <key>BUNDLE_ID</key>
+    <string>com.ticomarket.app</string>
+    <key>PROJECT_ID</key>
+    <string>tico-market-ci-fake</string>
+    <key>STORAGE_BUCKET</key>
+    <string>tico-market-ci-fake.appspot.com</string>
+    <key>IS_ADS_ENABLED</key>
+    <false/>
+    <key>IS_ANALYTICS_ENABLED</key>
+    <false/>
+    <key>IS_APPINVITE_ENABLED</key>
+    <false/>
+    <key>IS_GCM_ENABLED</key>
+    <true/>
+    <key>IS_SIGNIN_ENABLED</key>
+    <true/>
+    <key>GOOGLE_APP_ID</key>
+    <string>1:000000000000:ios:0000000000000000000000</string>
+</dict>
+</plist>

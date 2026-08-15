@@ -48,14 +48,20 @@ jobs:
           fi
           xcrun simctl install "$UDID" "$APP_PATH"
           xcrun simctl launch "$UDID" com.ticomarket.app
-          sleep 5
+          sleep 8
+
+      - name: Dump app logs (diagnostic)
+        if: always()
+        run: xcrun simctl spawn "$udid" log show --predicate 'process == "TicoMarket"' --style compact --last 3m || true
 
       - name: Take a screenshot
+        if: always()
         run: |
           mkdir -p screenshots
           xcrun simctl io "$udid" screenshot screenshots/sign-in-screen.png
 
       - name: Upload screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: simulator-screenshots

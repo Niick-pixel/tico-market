@@ -40,7 +40,12 @@ jobs:
           echo "udid=$UDID" >> "$GITHUB_ENV"
           xcrun simctl boot "$UDID"
           xcrun simctl bootstatus "$UDID" -b
-          APP_PATH=$(find build/Build/Products -maxdepth 1 -name "*.app" | head -n 1)
+          APP_PATH=$(find build/Build/Products -maxdepth 2 -name "*.app" | head -n 1)
+          echo "Found app bundle: $APP_PATH"
+          if [ -z "$APP_PATH" ]; then
+            echo "::error::No .app bundle found under build/Build/Products"
+            exit 1
+          fi
           xcrun simctl install "$UDID" "$APP_PATH"
           xcrun simctl launch "$UDID" com.ticomarket.app
           sleep 5

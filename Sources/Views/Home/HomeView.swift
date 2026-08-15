@@ -1,8 +1,14 @@
 import SwiftUI
 
 struct HomeView: View {
+    var previewMode: Bool = false
+
     @StateObject private var listingService = ListingService()
     @State private var selectedFilter: ListingType?
+
+    private var displayListings: [Listing] {
+        previewMode ? PreviewData.listings : listingService.listings
+    }
 
     var body: some View {
         NavigationStack {
@@ -10,7 +16,7 @@ struct HomeView: View {
                 filterBar
 
                 LazyVStack(spacing: 14) {
-                    ForEach(listingService.listings) { listing in
+                    ForEach(displayListings) { listing in
                         if let id = listing.id {
                             NavigationLink(value: id) {
                                 ListingRowView(listing: listing)
@@ -22,7 +28,7 @@ struct HomeView: View {
                 .padding(.horizontal)
                 .padding(.top, 8)
 
-                if listingService.listings.isEmpty && !listingService.isLoading {
+                if displayListings.isEmpty && !listingService.isLoading {
                     ContentUnavailableView(
                         "Todavía no hay publicaciones",
                         systemImage: "tray",
@@ -33,16 +39,24 @@ struct HomeView: View {
             }
             .navigationTitle("Tico Market")
             .navigationDestination(for: String.self) { listingId in
-                if let listing = listingService.listings.first(where: { $0.id == listingId }) {
+                if let listing = displayListings.first(where: { $0.id == listingId }) {
                     ListingDetailView(listing: listing)
                 }
             }
-            .onAppear { listingService.startListening(filter: selectedFilter) }
+            .onAppear {
+                guard !previewMode else { return }
+                listingService.startListening(filter: selectedFilter)
+            }
             .onChange(of: selectedFilter) { _, newValue in
+                guard !previewMode else { return }
                 listingService.startListening(filter: newValue)
             }
-            .onDisappear { listingService.stopListening() }
+            .onDisappear {
+                guard !previewMode else { return }
+                listingService.stopListening()
+            }
             .refreshable {
+                guard !previewMode else { return }
                 listingService.startListening(filter: selectedFilter)
             }
         }

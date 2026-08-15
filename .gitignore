@@ -19,3 +19,6 @@ Pods/
 
 # Firebase secrets — never commit your real config
 GoogleService-Info.plist
+
+# Local scratch downloads of CI screenshot artifacts
+ci-artifacts/

@@ -50,15 +50,23 @@ jobs:
           xcrun simctl launch "$UDID" com.ticomarket.app
           sleep 8
 
-      - name: Dump app logs (diagnostic)
-        if: always()
-        run: xcrun simctl spawn "$udid" log show --predicate 'process == "TicoMarket"' --style compact --last 3m || true
-
-      - name: Take a screenshot
+      - name: Screenshot - sign-in screen
         if: always()
         run: |
           mkdir -p screenshots
-          xcrun simctl io "$udid" screenshot screenshots/sign-in-screen.png
+          xcrun simctl io "$udid" screenshot screenshots/1-sign-in-screen.png
+
+      - name: Screenshot - home feed (preview mode, no backend needed)
+        if: always()
+        run: |
+          xcrun simctl terminate "$udid" com.ticomarket.app || true
+          SIMCTL_CHILD_UI_PREVIEW_MODE=1 xcrun simctl launch "$udid" com.ticomarket.app
+          sleep 5
+          xcrun simctl io "$udid" screenshot screenshots/2-home-feed.png
+
+      - name: Dump app logs (diagnostic)
+        if: always()
+        run: xcrun simctl spawn "$udid" log show --predicate 'process == "TicoMarket"' --style compact --last 3m || true
 
       - name: Upload screenshots
         if: always()

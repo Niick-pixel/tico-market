@@ -16,7 +16,10 @@ jobs:
         run: brew install xcodegen
 
       - name: Use a fake Firebase config for CI
-        run: cp Resources/GoogleService-Info.ci.plist GoogleService-Info.plist
+        run: |
+          cp Resources/GoogleService-Info.ci.plist GoogleService-Info.plist
+          pwd
+          ls -la GoogleService-Info.plist
 
       - name: Generate Xcode project
         run: xcodegen generate
@@ -25,6 +28,10 @@ jobs:
         run: |
           echo "--- pbxproj references ---"
           grep -i "googleservice" TicoMarket.xcodeproj/project.pbxproj || echo "(no matches in pbxproj)"
+          echo "--- xcodegen version ---"
+          xcodegen version
+          echo "--- resolved project.yml (xcodegen dump) ---"
+          xcodegen dump --spec project.yml || echo "(dump not supported by this xcodegen version)"
 
       - name: Show available simulators
         run: xcrun simctl list devices available

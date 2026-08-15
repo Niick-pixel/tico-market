@@ -17,8 +17,7 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: Sources
-    resources:
-      - GoogleService-Info.plist
+      - path: GoogleService-Info.plist
     info:
       path: Resources/Info.plist
     settings:

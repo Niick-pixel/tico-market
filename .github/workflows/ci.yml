@@ -21,6 +21,11 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
+      - name: Diagnostic - was GoogleService-Info.plist wired into the target?
+        run: |
+          echo "--- pbxproj references ---"
+          grep -i "googleservice" TicoMarket.xcodeproj/project.pbxproj || echo "(no matches in pbxproj)"
+
       - name: Show available simulators
         run: xcrun simctl list devices available
 
@@ -33,6 +38,9 @@ jobs:
             -destination "platform=iOS Simulator,name=iPhone 16" \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO
+
+      - name: Diagnostic - is GoogleService-Info.plist inside the built .app?
+        run: find build/Build/Products -iname "GoogleService-Info.plist" || echo "(not found in built products)"
 
       - name: Boot Simulator, install and launch the app
         run: |

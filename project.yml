@@ -18,8 +18,7 @@ targets:
     sources:
       - path: Sources
     resources:
-      - path: GoogleService-Info.plist
-        optional: true
+      - GoogleService-Info.plist
     info:
       path: Resources/Info.plist
     settings:

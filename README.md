@@ -107,6 +107,12 @@ project.yml                  # XcodeGen spec — generates TicoMarket.xcodeproj
    ```
    Xcode will resolve the Firebase Swift Package on first build — this can take a few minutes.
 
+   `GoogleService-Info.plist` must already be sitting in the repo root before you run
+   `xcodegen generate` (step 2) — `project.yml` lists it as a required resource, so
+   generation fails loudly if it's missing rather than silently shipping an app that
+   crashes on launch with "could not find a valid GoogleService-Info.plist". If you add or
+   replace the file later, rerun `xcodegen generate` to pick it up.
+
 5. **Add `GoogleService-Info.plist` to the Xcode target** if it wasn't picked up automatically
    (drag it into the project navigator, make sure "Copy items if needed" and the TicoMarket
    target are checked).
